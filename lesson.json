@@ -1,0 +1,440 @@
+{
+  "schema_version": 1,
+  "id": "sat-engineer-c-pointers",
+  "revision": "v1.0.0",
+  "title": "C · 주소와 값, 배열의 칸을 구분해요",
+  "description": "화살표를 그리고 실행해서 확인해요. 필수 5문제와 선택 도전 1문제예요.",
+  "sources": [
+    "https://en.cppreference.com/w/c/language/pointer.html",
+    "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf"
+  ],
+  "sections": [
+    {
+      "id": "how",
+      "title": "예상하고, 실행하고, 한 줄만 바꿔요",
+      "body": "실행하기 전에 결과를 먼저 예상해요.\n틀린 이유는 변수 칸이나 자료의 행에서 찾아요.\n준비 코드를 조금 바꾸고 결과를 비교해요.\n마지막 선택 도전은 힌트 없이 먼저 풀어봐요."
+    },
+    {
+      "id": "memory",
+      "title": "화살표를 그리는 순서",
+      "body": "a와 b의 값 칸을 먼저 그려요.\np는 어느 값 칸의 주소인지 연결해요.\npp는 p 칸의 주소를 연결해요.\n별 하나마다 화살표를 한 번 따라가요.\n대입 왼쪽이 어떤 칸인지 표시한 뒤 계산해요."
+    }
+  ],
+  "review_enabled": false,
+  "tasks": [
+    {
+      "id": "address",
+      "title": "주소를 저장하고 값을 읽어요",
+      "goal": "&는 주소를, *는 가리키는 칸의 값을 다뤄요.\n\np가 a를 가리키게 고치세요.\n실행 전에 *p가 무엇인지 예상해요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 주소를 저장할 포인터예요.\n    int *p = &b;\n    // 주소 숫자가 아니라 가리킨 값을 출력해요.\n    printf(\"%d\\n\", *p);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 주소를 저장할 포인터예요.\n    int *p = &a;\n    // 주소 숫자가 아니라 가리킨 값을 출력해요.\n    printf(\"%d\\n\", *p);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "3 8\n",
+          "expected": "3"
+        },
+        {
+          "input": "7 12\n",
+          "expected": "7"
+        },
+        {
+          "input": "11 4\n",
+          "expected": "11"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "변수 칸과 그 칸을 가리키는 화살표를 그려 보세요.",
+        "int *p = &a;"
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 주소를 저장할 포인터예요.\n    int *p = &b;\n    // 주소 숫자가 아니라 가리킨 값을 출력해요.\n    printf(\"%d\\n\", *p);\n    return 0;\n}\n",
+          "say": "먼저 값을 예상하고 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 8"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 주소 자체의 숫자는 실행마다 달라질 수 있어요."
+        },
+        {
+          "action": "patch_code",
+          "before": "int *p = &b;",
+          "after": "int *p = &a;",
+          "say": "대상 칸을 확인하고 작은 부분만 바꿔요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 3"
+        },
+        {
+          "action": "submit"
+        }
+      ]
+    },
+    {
+      "id": "write-through",
+      "title": "포인터가 가리킨 칸을 바꿔요",
+      "goal": "*p에 대입하면 p가 가리키는 변수 값이 바뀌어요.\n\n복사한 값 말고 a 자체를 b로 바꾸세요.\n대입문의 왼쪽을 *p로 바꿔요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int *p = &a;\n    // copy는 a와 별도의 칸이에요.\n    int copy = *p;\n    copy = b;\n    // a가 바뀌었는지 확인해요.\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int *p = &a;\n    // copy는 a와 별도의 칸이에요.\n    int copy = *p;\n    *p = b;\n    // a가 바뀌었는지 확인해요.\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "3 8\n",
+          "expected": "8 8"
+        },
+        {
+          "input": "7 12\n",
+          "expected": "12 12"
+        },
+        {
+          "input": "11 4\n",
+          "expected": "4 4"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "변수 칸과 그 칸을 가리키는 화살표를 그려 보세요.",
+        "*p = b;"
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int *p = &a;\n    // copy는 a와 별도의 칸이에요.\n    int copy = *p;\n    copy = b;\n    // a가 바뀌었는지 확인해요.\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+          "say": "먼저 값을 예상하고 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 3 8"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 값을 복사한 변수에 대입해도 원본은 안 바뀌어요."
+        },
+        {
+          "action": "patch_code",
+          "before": "copy = b;",
+          "after": "*p = b;",
+          "say": "대상 칸을 확인하고 작은 부분만 바꿔요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 8 8"
+        },
+        {
+          "action": "submit"
+        }
+      ]
+    },
+    {
+      "id": "retarget",
+      "title": "포인터의 방향만 바꿔요",
+      "goal": "p에 주소를 대입하면 가리키는 대상이 바뀌어요.\n\na 값을 바꾸지 말고 p가 b를 가리키게 해요.\n*p=b 대신 주소를 대입하세요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int *p = &a;\n    // 포인터 방향을 b로 바꿀 자리예요.\n    *p = b;\n    printf(\"%d %d\\n\", a, *p);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int *p = &a;\n    // 포인터 방향을 b로 바꿀 자리예요.\n    p = &b;\n    printf(\"%d %d\\n\", a, *p);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "3 8\n",
+          "expected": "3 8"
+        },
+        {
+          "input": "7 12\n",
+          "expected": "7 12"
+        },
+        {
+          "input": "11 4\n",
+          "expected": "11 4"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "변수 칸과 그 칸을 가리키는 화살표를 그려 보세요.",
+        "p = &b;"
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int *p = &a;\n    // 포인터 방향을 b로 바꿀 자리예요.\n    *p = b;\n    printf(\"%d %d\\n\", a, *p);\n    return 0;\n}\n",
+          "say": "먼저 값을 예상하고 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 8 8"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. p=&b는 방향 변경, *p=b는 값 변경이에요."
+        },
+        {
+          "action": "patch_code",
+          "before": "*p = b;",
+          "after": "p = &b;",
+          "say": "대상 칸을 확인하고 작은 부분만 바꿔요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 3 8"
+        },
+        {
+          "action": "submit"
+        }
+      ]
+    },
+    {
+      "id": "array-step",
+      "title": "포인터를 한 원소 옮겨요",
+      "goal": "int 포인터에 1을 더하면 다음 int 원소를 가리켜요.\n\n첫 원소가 아니라 둘째 원소를 출력하세요.\np에 1을 더한 뒤 역참조해요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 세 원소를 연속한 칸에 담아요.\n    int values[] = {a, b, a + b};\n    int *p = values;\n    // 다음 원소의 값을 읽을 자리예요.\n    printf(\"%d\\n\", *p);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 세 원소를 연속한 칸에 담아요.\n    int values[] = {a, b, a + b};\n    int *p = values;\n    // 다음 원소의 값을 읽을 자리예요.\n    printf(\"%d\\n\", *(p + 1));\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "3 8\n",
+          "expected": "8"
+        },
+        {
+          "input": "7 12\n",
+          "expected": "12"
+        },
+        {
+          "input": "11 4\n",
+          "expected": "4"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "변수 칸과 그 칸을 가리키는 화살표를 그려 보세요.",
+        "printf(\"%d\\n\", *(p + 1));"
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 세 원소를 연속한 칸에 담아요.\n    int values[] = {a, b, a + b};\n    int *p = values;\n    // 다음 원소의 값을 읽을 자리예요.\n    printf(\"%d\\n\", *p);\n    return 0;\n}\n",
+          "say": "먼저 값을 예상하고 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 3"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 더하는 1은 1바이트가 아니라 원소 한 칸이에요."
+        },
+        {
+          "action": "patch_code",
+          "before": "printf(\"%d\\n\", *p);",
+          "after": "printf(\"%d\\n\", *(p + 1));",
+          "say": "대상 칸을 확인하고 작은 부분만 바꿔요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 8"
+        },
+        {
+          "action": "submit"
+        }
+      ]
+    },
+    {
+      "id": "precedence",
+      "title": "포인터 이동과 값 증가를 구분해요",
+      "goal": "(*p)++는 값을 늘리고 p++는 방향을 옮겨요.\n\n첫 원소의 값만 하나 늘리세요.\n포인터를 다음 칸으로 옮기면 안 돼요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int values[] = {a, b};\n    int *p = values;\n    // 첫 칸의 값을 증가시켜요.\n    p++;\n    printf(\"%d %d\\n\", values[0], *p);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int values[] = {a, b};\n    int *p = values;\n    // 첫 칸의 값을 증가시켜요.\n    (*p)++;\n    printf(\"%d %d\\n\", values[0], *p);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "3 8\n",
+          "expected": "4 4"
+        },
+        {
+          "input": "7 12\n",
+          "expected": "8 8"
+        },
+        {
+          "input": "11 4\n",
+          "expected": "12 12"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "변수 칸과 그 칸을 가리키는 화살표를 그려 보세요.",
+        "(*p)++;"
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    int values[] = {a, b};\n    int *p = values;\n    // 첫 칸의 값을 증가시켜요.\n    p++;\n    printf(\"%d %d\\n\", values[0], *p);\n    return 0;\n}\n",
+          "say": "먼저 값을 예상하고 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 3 8"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 괄호 하나로 바뀌는 대상이 달라져요."
+        },
+        {
+          "action": "patch_code",
+          "before": "p++;",
+          "after": "(*p)++;",
+          "say": "대상 칸을 확인하고 작은 부분만 바꿔요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 4 4"
+        },
+        {
+          "action": "submit"
+        }
+      ]
+    },
+    {
+      "id": "pointer-array",
+      "title": "도전 · 주소 목록에서 골라요",
+      "goal": "포인터 배열의 원소에는 각각 주소가 들어 있어요.\n\n둘째 주소가 가리키는 칸에 a+b를 넣으세요.\n첫째 주소 대신 둘째 주소를 선택해요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 각 원소가 서로 다른 변수를 가리켜요.\n    int *refs[] = {&a, &b};\n    // 바꿀 주소를 골라 역참조해요.\n    *refs[0] = a + b;\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 각 원소가 서로 다른 변수를 가리켜요.\n    int *refs[] = {&a, &b};\n    // 바꿀 주소를 골라 역참조해요.\n    *refs[1] = a + b;\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "3 8\n",
+          "expected": "3 11"
+        },
+        {
+          "input": "7 12\n",
+          "expected": "7 19"
+        },
+        {
+          "input": "11 4\n",
+          "expected": "11 15"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": false,
+      "hints": [
+        "변수 칸과 그 칸을 가리키는 화살표를 그려 보세요.",
+        "*refs[1] = a + b;"
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\nint main(void) {\n    // 입력값을 바꿔도 같은 원리로 풀어요.\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) return 1;\n    // 각 원소가 서로 다른 변수를 가리켜요.\n    int *refs[] = {&a, &b};\n    // 바꿀 주소를 골라 역참조해요.\n    *refs[0] = a + b;\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+          "say": "먼저 값을 예상하고 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 11 8"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. refs[1]은 주소이고 *refs[1]은 그 칸의 값이에요."
+        },
+        {
+          "action": "patch_code",
+          "before": "*refs[0] = a + b;",
+          "after": "*refs[1] = a + b;",
+          "say": "대상 칸을 확인하고 작은 부분만 바꿔요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 3 11"
+        },
+        {
+          "action": "submit"
+        }
+      ]
+    }
+  ]
+}
